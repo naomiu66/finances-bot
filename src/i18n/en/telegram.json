@@ -1,0 +1,7 @@
+{
+    "notRegistered": "It seems you are not registered yet. Please start with /start command to create your profile.",
+    "start": {
+        "message": "Hello {name}! I am a bot that helps you manage your finances. I can help you track your expenses, set budgets, and provide insights into your spending habits. Just use the commands in the menu to get started!",
+        "error": "An error occurred while processing your request. Please try again later."
+    }
+}
