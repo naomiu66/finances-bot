@@ -14,9 +14,21 @@ export class CommandsHandler {
         args: { name: ctx.from?.first_name || '' },
       });
 
-      await this.usersService.createUser({
-        telegramId: ctx.from?.id.toString() || '',
-      });
+      const userId = ctx.from?.id.toString();
+
+      if (!userId) {
+        const errorMsg = i18n.t('telegram.start.error');
+        await ctx.reply(errorMsg);
+        return;
+      }
+
+      const user = await this.usersService.getUserByTelegramId(userId);
+
+      if (!user) {
+        await this.usersService.createUser({
+          telegramId: ctx.from?.id.toString() || '',
+        });
+      }
 
       await ctx.reply(reply);
     } catch (error: unknown) {
@@ -30,6 +42,20 @@ export class CommandsHandler {
 
   async menuCommand(ctx: Context, i18n: I18nContext) {
     try {
+      const userId = ctx.from?.id.toString();
+
+      if (!userId) {
+        await ctx.reply(i18n.t('telegram.unexpectedError'));
+        return;
+      }
+
+      const user = await this.usersService.getUserByTelegramId(userId);
+
+      if (!user) {
+        await ctx.reply(i18n.t('telegram.notRegistered'));
+        return;
+      }
+
       const text = i18n.t('telegram.menu.message');
 
       const keyboard = Markup.inlineKeyboard([

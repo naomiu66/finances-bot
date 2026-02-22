@@ -44,40 +44,48 @@ export class TelegramUpdate {
   @Action('add_expense')
   async onAddExpense(@Ctx() ctx: WizardContext, @I18n() i18n: I18nContext) {
     this.logger.log(`Received add_expense action from user ${ctx.from?.id}`);
-    return;
+    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 
-  @Action('show_categories')
-  async onShowCustomCategories(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
+  @Action('click_category')
+  async onClickCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
     this.logger.log(
-      `Received show_categories action from user ${ctx.from?.id}`,
+      `Received click_category action from user ${ctx.from?.id}`,
     );
-    return;
+    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 
   @Action('add_category')
-  async onAddCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
+  async onAddCategory(@Ctx() ctx: WizardContext, @I18n() i18n: I18nContext) {
     this.logger.log(`Received add_category action from user ${ctx.from?.id}`);
     await this.callbacksHandler.onAddCategoryCallback(ctx, i18n);
   }
 
+  @Action('rename_category')
+  async onRenameCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
+    this.logger.log(
+      `Received rename_category action from user ${ctx.from?.id}`,
+    );
+    await ctx.reply(i18n.t('telegram.notImplemented'));
+  }
+
   @Action('delete_category')
-  async onDeleteCustomCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
+  async onDeleteCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
     this.logger.log(
       `Received delete_category action from user ${ctx.from?.id}`,
     );
-    return;
+    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 
   @Action('show_stats')
   async onShowStats(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
     this.logger.log(`Received show_stats action from user ${ctx.from?.id}`);
-    return;
+    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 
   @Action('settings')
   async onSettings(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
     this.logger.log(`Received settings action from user ${ctx.from?.id}`);
-    return;
+    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 }

@@ -9,6 +9,7 @@ import { AddExpenseScene } from './scenes/add-expense.scene';
 import { AddCategoryScene } from './scenes/add-category.scene';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ExpensesModule } from 'src/expenses/expenses.module';
+import { session } from 'telegraf';
 
 @Module({
   imports: [
@@ -23,8 +24,11 @@ import { ExpensesModule } from 'src/expenses/expenses.module';
         const token = configService.get<string>('BOT_TOKEN');
         if (!token) throw new Error('BOT_TOKEN is not defined in .env');
         return {
+          middlewares: [
+            session()
+          ],
           token,
-          include: [AddCategoryScene, AddExpenseScene]
+          // include: [AddCategoryScene, AddExpenseScene]
           //       launchOptions: {
           // webhook: {
           //   domain,
