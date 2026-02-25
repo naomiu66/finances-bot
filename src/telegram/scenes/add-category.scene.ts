@@ -4,7 +4,7 @@ import { Ctx, Message, On, Wizard, WizardStep } from 'nestjs-telegraf';
 import { CategoriesService } from 'src/categories/categories.service';
 import { UsersService } from 'src/users/users.service';
 import type { WizardContext } from 'telegraf/scenes';
-import { CallbacksHandler } from '../handlers/callbacks.handlers';
+import { CallbacksHandler } from '../handlers/callbacks.handler';
 
 @Wizard('add_category')
 @Injectable()

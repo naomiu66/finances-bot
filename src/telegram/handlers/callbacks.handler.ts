@@ -86,12 +86,23 @@ export class CallbacksHandler {
 
   async onClickCategory(ctx: Context, i18n: I18nContext) {
     try {
+      this.logger.log('on_click method voked');
     } catch (error) {
       this.logger.error(
         `Error processing category callback: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
       const errorMsg = i18n.t('telegram.markup.categories.error');
       await ctx.reply(errorMsg);
+    }
+  }
+
+  async onAddExpenseCallback(ctx: WizardContext, i18n: I18nContext) {
+    try {
+      await ctx.deleteMessage();
+      await ctx.scene.enter('add_expense');
+    } catch (error) {
+      this.logger.error('Error processing add category callback', error);
+      await ctx.reply(i18n.t('telegram.scenes.error'));
     }
   }
 }

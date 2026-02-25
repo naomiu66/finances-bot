@@ -4,7 +4,7 @@ import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramUpdate } from './telegram.update';
 import { UsersModule } from 'src/users/users.module';
 import { CommandsHandler } from './handlers/commands.handler';
-import { CallbacksHandler } from './handlers/callbacks.handlers';
+import { CallbacksHandler } from './handlers/callbacks.handler';
 import { AddExpenseScene } from './scenes/add-expense.scene';
 import { AddCategoryScene } from './scenes/add-category.scene';
 import { CategoriesModule } from 'src/categories/categories.module';
@@ -28,7 +28,6 @@ import { session } from 'telegraf';
             session()
           ],
           token,
-          // include: [AddCategoryScene, AddExpenseScene]
           //       launchOptions: {
           // webhook: {
           //   domain,

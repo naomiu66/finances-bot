@@ -3,7 +3,7 @@ import { Action, Command, Ctx, Start, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { CommandsHandler } from './handlers/commands.handler';
-import { CallbacksHandler } from './handlers/callbacks.handlers';
+import { CallbacksHandler } from './handlers/callbacks.handler';
 import type { WizardContext } from 'telegraf/scenes';
 
 @Update()
@@ -44,14 +44,12 @@ export class TelegramUpdate {
   @Action('add_expense')
   async onAddExpense(@Ctx() ctx: WizardContext, @I18n() i18n: I18nContext) {
     this.logger.log(`Received add_expense action from user ${ctx.from?.id}`);
-    await ctx.reply(i18n.t('telegram.notImplemented'));
+    await this.callbacksHandler.onAddExpenseCallback(ctx, i18n);
   }
 
   @Action('click_category')
   async onClickCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
-    this.logger.log(
-      `Received click_category action from user ${ctx.from?.id}`,
-    );
+    this.logger.log(`Received click_category action from user ${ctx.from?.id}`);
     await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 

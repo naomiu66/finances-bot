@@ -26,7 +26,7 @@ export class CommandsHandler {
 
       if (!user) {
         await this.usersService.createUser({
-          telegramId: ctx.from?.id.toString() || '',
+          telegramId: userId || '',
         });
       }
 
