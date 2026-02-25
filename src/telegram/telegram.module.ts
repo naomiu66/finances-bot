@@ -10,6 +10,7 @@ import { AddCategoryScene } from './scenes/add-category.scene';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ExpensesModule } from 'src/expenses/expenses.module';
 import { session } from 'telegraf';
+import { RenameCategoryScene } from './scenes/rename-category.scene';
 
 @Module({
   imports: [
@@ -24,9 +25,7 @@ import { session } from 'telegraf';
         const token = configService.get<string>('BOT_TOKEN');
         if (!token) throw new Error('BOT_TOKEN is not defined in .env');
         return {
-          middlewares: [
-            session()
-          ],
+          middlewares: [session()],
           token,
           //       launchOptions: {
           // webhook: {
@@ -42,6 +41,7 @@ import { session } from 'telegraf';
     TelegramUpdate,
     AddExpenseScene,
     AddCategoryScene,
+    RenameCategoryScene,
   ],
 })
 export class TelegramModule {}

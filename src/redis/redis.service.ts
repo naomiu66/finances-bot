@@ -66,6 +66,15 @@ export class RedisService implements OnModuleDestroy {
     }
   }
 
+  async delete(key: string) {
+    try {
+      await this.client.del(key);
+    } catch (error) {
+      this.logger.error(`Failed to delete raw with key: ${key} in redis`, error);
+      throw error;
+    }
+  }
+
   async invalidate(pattern: string) {
     try {
       const keys = await this.client.keys(pattern);

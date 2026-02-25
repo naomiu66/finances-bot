@@ -40,6 +40,25 @@ export class CategoriesService {
     }
   }
 
+  async getById(id: string) {
+    try {
+      const cacheKey = `categories:id:${id}`;
+      const cachedCategory = await this.redisService.get<Category>(cacheKey);
+      if (cachedCategory) return cachedCategory;
+
+      const category = await this.repository.category.findUnique({
+        where: { id },
+      });
+
+      if (category) await this.redisService.set<Category>(cacheKey, category);
+
+      return category;
+    } catch (error) {
+      this.logger.error('Error fetching category by id:', error);
+      throw error;
+    }
+  }
+
   async create(userId: string, name: string) {
     try {
       await this.repository.category.create({
@@ -49,18 +68,38 @@ export class CategoriesService {
         },
       });
 
-      await this.redisService.invalidate(`categories:userId:${userId}:*`);
+      await this.redisService.invalidate(`categories:userId:${userId}*`);
     } catch (error) {
       this.logger.error('Error creating category:', error);
       throw error;
     }
   }
 
-  async delete(id: string) {
+  async rename(id: string, name: string, userId: string) {
+    try {
+      await this.repository.category.update({
+        where: { id },
+        data: {
+          name,
+        },
+      });
+
+      await this.redisService.delete(`categories:id:${id}`);
+      await this.redisService.invalidate(`categories:userId:${userId}:*`);
+    } catch (error) {
+      this.logger.error('Error updating category', error);
+      throw error;
+    }
+  }
+
+  async delete(id: string, userId: string) {
     try {
       await this.repository.category.delete({
         where: { id },
       });
+
+      await this.redisService.delete(`categories:id:${id}`);
+      await this.redisService.invalidate(`categories:userId:${userId}:*`);
     } catch (error) {
       this.logger.error('Error deleting category', error);
       throw error;

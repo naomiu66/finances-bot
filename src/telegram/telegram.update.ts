@@ -47,32 +47,28 @@ export class TelegramUpdate {
     await this.callbacksHandler.onAddExpenseCallback(ctx, i18n);
   }
 
-  @Action('click_category')
-  async onClickCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
-    this.logger.log(`Received click_category action from user ${ctx.from?.id}`);
-    await ctx.reply(i18n.t('telegram.notImplemented'));
+  @Action(/^category_(.+)/)
+  async onClickCategory(@Ctx() ctx: Context & { match: RegExpExecArray }, @I18n() i18n: I18nContext) {
+    this.logger.log(`Received category_${ctx.match[1]} action from user ${ctx.from?.id}`);
+    await this.callbacksHandler.onClickCategory(ctx, i18n);
+  }
+
+  @Action(/^delete_category_(.+)/)
+  async onDeleteCategory(@Ctx() ctx: Context & { match: RegExpExecArray }, @I18n() i18n: I18nContext) {
+    this.logger.log(`Received delete_category_${ctx.match[1]} action from user ${ctx.from?.id}`);
+    await this.callbacksHandler.onDeleteCategory(ctx, i18n);
+  }
+
+  @Action(/^rename_category_(.+)/)
+  async onRenameCategory(@Ctx() ctx: WizardContext & { match: RegExpExecArray }, @I18n() i18n: I18nContext) {
+    this.logger.log(`Received rename_category_${ctx.match[1]} action from user ${ctx.from?.id}`);
+    await this.callbacksHandler.onRenameCategory(ctx, i18n);
   }
 
   @Action('add_category')
   async onAddCategory(@Ctx() ctx: WizardContext, @I18n() i18n: I18nContext) {
     this.logger.log(`Received add_category action from user ${ctx.from?.id}`);
     await this.callbacksHandler.onAddCategoryCallback(ctx, i18n);
-  }
-
-  @Action('rename_category')
-  async onRenameCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
-    this.logger.log(
-      `Received rename_category action from user ${ctx.from?.id}`,
-    );
-    await ctx.reply(i18n.t('telegram.notImplemented'));
-  }
-
-  @Action('delete_category')
-  async onDeleteCategory(@Ctx() ctx: Context, @I18n() i18n: I18nContext) {
-    this.logger.log(
-      `Received delete_category action from user ${ctx.from?.id}`,
-    );
-    await ctx.reply(i18n.t('telegram.notImplemented'));
   }
 
   @Action('show_stats')

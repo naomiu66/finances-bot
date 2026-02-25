@@ -50,10 +50,7 @@ export class CallbacksHandler {
           ),
         ],
         ...categories.map((category) => [
-          Markup.button.callback(
-            `${category.name}`,
-            `click_category_${category.id}`,
-          ),
+          Markup.button.callback(`${category.name}`, `category_${category.id}`),
         ]),
       ]);
 
@@ -84,9 +81,93 @@ export class CallbacksHandler {
     }
   }
 
-  async onClickCategory(ctx: Context, i18n: I18nContext) {
+  async onClickCategory(
+    ctx: Context & { match: RegExpExecArray },
+    i18n: I18nContext,
+  ) {
     try {
-      this.logger.log('on_click method voked');
+      const categoryId = ctx.match[1];
+      const category = await this.categoriesService.getById(categoryId);
+
+      if (!category) {
+        await ctx.reply(i18n.t('telegram.markup.categories.notFound'));
+        return;
+      }
+
+      const keyboard = Markup.inlineKeyboard([
+        [
+          Markup.button.callback(
+            i18n.t('telegram.markup.categories.deleteCustomCategory'),
+            `delete_category_${categoryId}`,
+          ),
+        ],
+        [
+          Markup.button.callback(
+            i18n.t('telegram.markup.categories.renameCustomCategory'),
+            `rename_category_${categoryId}`,
+          ),
+        ],
+      ]);
+
+      await ctx.editMessageText(
+        i18n.t('telegram.markup.categories.actions', {
+          args: { name: category.name },
+        }),
+        keyboard,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error processing category callback: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+      const errorMsg = i18n.t('telegram.markup.categories.error');
+      await ctx.reply(errorMsg);
+    }
+  }
+
+  async onDeleteCategory(
+    ctx: Context & { match: RegExpExecArray },
+    i18n: I18nContext,
+  ) {
+    try {
+      const categoryId = ctx.match[1];
+
+      const userId = ctx.from?.id.toString();
+
+      if(!userId) {
+        await ctx.reply(i18n.t('telegram.scenes.error'));
+        return;
+      }
+
+      const user = await this.usersService.getUserByTelegramId(userId);
+
+      if(!user) {
+        await ctx.reply(i18n.t('telegram.scenes.error'));
+        return;
+      }
+
+      await this.categoriesService.delete(categoryId, user.id);
+
+      await ctx.reply(i18n.t('telegram.deletedCategory'));
+
+      await this.onCategoryCallback(ctx, i18n);
+    } catch (error) {
+      this.logger.error(
+        `Error processing category callback: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+      const errorMsg = i18n.t('telegram.markup.categories.error');
+      await ctx.reply(errorMsg);
+    }
+  }
+
+  async onRenameCategory(
+    ctx: WizardContext & { match: RegExpExecArray },
+    i18n: I18nContext,
+  ) {
+    try {
+      const categoryId = ctx.match[1];
+      await ctx.deleteMessage();
+      await ctx.scene.enter('rename_category');
+      ctx.wizard.state['categoryId'] = categoryId;
     } catch (error) {
       this.logger.error(
         `Error processing category callback: ${error instanceof Error ? error.message : 'Unknown error'}`,
